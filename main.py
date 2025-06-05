@@ -101,9 +101,6 @@ def main():
     register_handlers(bot)
     register_activity_handlers(bot)
     
-    # Schedule the midnight check
-    schedule_midnight_check(bot)
-    
     if USE_WEBHOOK:
         # Webhook mode for production
         print(f"Starting bot in webhook mode on {WEBHOOK_HOST}:{WEBHOOK_PORT}")
