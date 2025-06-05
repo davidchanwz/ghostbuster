@@ -21,6 +21,9 @@ load_dotenv()
 # Get the API token from environment variable or use a default for development
 API_TOKEN = os.environ.get('TELEGRAM_API_TOKEN', 'TOKEN')
 
+# Get the API key for securing the check_activity endpoint
+API_KEY = os.environ.get('API_KEY', 'defaultapikey123')
+
 WEBHOOK_HOST = os.environ.get('WEBHOOK_HOST', 'localhost')
 WEBHOOK_PORT = int(os.environ.get('WEBHOOK_PORT', 8443))  # 443, 80, 88 or 8443 (port need to be 'open')
 WEBHOOK_LISTEN = os.environ.get('WEBHOOK_LISTEN', '0.0.0.0')  # In some VPS you may need to put here the IP addr
@@ -67,6 +70,31 @@ def process_webhook(update: dict):
 @app.get("/")
 def health_check():
     return {"status": "OK"}
+    
+@app.get("/check_activity")
+def check_user_activity(api_key: str = None):
+    """
+    Endpoint to check user activity and send failure messages
+    This can be called by a cronjob at midnight
+    
+    Args:
+        api_key: API key for authorization
+    
+    Returns:
+        Activity check results or error message
+    """
+    # Security: Verify API key
+    if not api_key or api_key != API_KEY:
+        return {
+            "error": "Unauthorized access - invalid or missing API key",
+            "status": "error"
+        }, 401
+    
+    from scheduler import perform_activity_check
+    
+    # Perform activity check and send messages
+    result = perform_activity_check(bot)
+    return result
     
 def main():
     """Main function to run the bot in either webhook or polling mode"""

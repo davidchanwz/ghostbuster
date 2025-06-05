@@ -10,36 +10,30 @@ import time
 import threading
 import datetime
 import pytz
-import schedule
 from activity_handlers import send_daily_failure_messages
 
 # Singapore timezone for deadline checking
 SG_TIMEZONE = pytz.timezone('Asia/Singapore')
 
-
-def schedule_midnight_check(bot):
+def perform_activity_check(bot):
     """
-    Schedule the midnight check for activity tracking
+    Check all tracked users for activity and send failure messages
+    This function can be called directly from an API endpoint
     
     Args:
         bot: The Telegram bot instance
+        
+    Returns:
+        dict: Results of the activity check
     """
-    # Schedule the task to run at midnight Singapore time
-    schedule.every().day.at("00:00").do(send_daily_failure_messages, bot)
-    
-    # Start the scheduling thread
-    scheduler_thread = threading.Thread(target=run_scheduler)
-    scheduler_thread.daemon = True
-    scheduler_thread.start()
-    
-    print("Scheduled midnight check for activity tracking")
-
-
-def run_scheduler():
-    """Run the scheduler in a separate thread"""
-    while True:
-        schedule.run_pending()
-        time.sleep(60)  # Check every minute
+    print(f"[{datetime.datetime.now(SG_TIMEZONE)}] Running activity check...")
+    result = send_daily_failure_messages(bot)
+    return {
+        "timestamp": datetime.datetime.now(SG_TIMEZONE).isoformat(),
+        "checked_users": result.get("checked", 0),
+        "failures": result.get("failures", 0),
+        "success": True
+    }
 
 
 def seconds_until_midnight():

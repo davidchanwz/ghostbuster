@@ -178,4 +178,32 @@ CREATE TABLE IF NOT EXISTS user_streaks (
 
 MIT
 
-MIT
+## API Endpoints
+
+The bot provides the following API endpoints:
+
+### Health Check
+- **URL**: `/`
+- **Method**: `GET`
+- **Description**: Simple health check to verify the bot is running.
+- **Response**: `{"status": "OK"}`
+
+### Activity Check
+- **URL**: `/check_activity`
+- **Method**: `GET`
+- **Query Parameter**: `api_key` (required)
+- **Description**: Triggers a check of all tracked users, sending failure messages to those who haven't sent a message today. Ideal for running via a cron job at midnight.
+- **Security**: Protected with an API key that must be provided as a query parameter.
+- **Response**: 
+  ```json
+  {
+    "timestamp": "2025-06-06T00:00:12.345678+08:00",
+    "checked_users": 10,
+    "failures": 3,
+    "success": true
+  }
+  ```
+- **Example cron command**: 
+  ```
+  curl "https://your-bot-domain.com/check_activity?api_key=your_api_key"
+  ```

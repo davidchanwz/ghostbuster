@@ -369,8 +369,12 @@ def send_daily_failure_messages(bot):
     
     Args:
         bot: The Telegram bot instance
+        
+    Returns:
+        dict: Stats about the check (number of users checked, failures found)
     """
     failures = mark_daily_failures()
+    failure_count = 0
     
     for user in failures:
         chat_id = user['chat_id']
@@ -396,5 +400,12 @@ def send_daily_failure_messages(bot):
                 message = f"👻 SPECTRAL ALERT! {user_info.first_name} has crossed over to the invisible realm today! No messages detected on our PKE meter!"
                 
             bot.send_message(chat_id, message)
+            failure_count += 1
+            print(f"Sent failure message to {user_info.first_name} in chat {chat_id}")
         except Exception as e:
             print(f"Error sending failure message: {e}")
+    
+    return {
+        "checked": len(failures),
+        "failures": failure_count
+    }
