@@ -42,8 +42,8 @@ POLLING_INTERVAL = int(os.environ.get('POLLING_INTERVAL', 3))
 # When asked for "Common Name (e.g. server FQDN or YOUR name)" you should reply
 # with the same value in you put in WEBHOOK_HOST
 
-WEBHOOK_URL_BASE = "https://{}:{}".format(WEBHOOK_HOST, WEBHOOK_PORT)
-WEBHOOK_URL_PATH = "/{}/".format(API_TOKEN)
+WEBHOOK_PATH = f"/{API_TOKEN}/"
+WEBHOOK_URL = f"https://{WEBHOOK_HOST}{WEBHOOK_PATH}"
 
 logger = telebot.logger
 telebot.logger.setLevel(logging.INFO)
