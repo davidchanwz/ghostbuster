@@ -89,7 +89,7 @@ def check_user_activity(api_key: str = None):
             "status": "error"
         }, 401
     
-    from scheduler import perform_activity_check
+    from activity_handlers import perform_activity_check
     
     # Perform activity check and send messages
     result = perform_activity_check(bot)

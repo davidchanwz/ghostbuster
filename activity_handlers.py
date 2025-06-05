@@ -414,3 +414,30 @@ def send_daily_failure_messages(bot):
         "checked": len(failures),
         "failures": failure_count
     }
+
+
+def perform_activity_check(bot):
+    """
+    Check all tracked users for activity and send failure messages
+    This function can be called directly from an API endpoint
+    
+    Args:
+        bot: The Telegram bot instance
+        
+    Returns:
+        dict: Results of the activity check
+    """
+    import datetime
+    import pytz
+    
+    # Singapore timezone for deadline checking
+    SG_TIMEZONE = pytz.timezone('Asia/Singapore')
+    
+    print(f"[{datetime.datetime.now(SG_TIMEZONE)}] Running activity check...")
+    result = send_daily_failure_messages(bot)
+    return {
+        "timestamp": datetime.datetime.now(SG_TIMEZONE).isoformat(),
+        "checked_users": result.get("checked", 0),
+        "failures": result.get("failures", 0),
+        "success": True
+    }
