@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  telegram-bot:
+    build: .
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    ports:
+      - "8443:8443"
+    # Add a restart policy if you want your bot to automatically restart
+    restart: unless-stopped
