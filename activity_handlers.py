@@ -389,15 +389,20 @@ def send_daily_failure_messages(bot):
             report = get_user_activity_report(chat_id, user_id)
             failure_streak = report.get('failure_streak', 0) if report else 0
             
+            # Format the name with username in parentheses if available
+            display_name = user_info.first_name
+            if hasattr(user_info, 'username') and user_info.username:
+                display_name += f" (@{user_info.username})"
+            
             # Send failure message
             if failure_streak > 1:
                 message = (
-                    f"👻 WHO YA GONNA CALL? NOT {user_info.first_name}! This ghost has vanished from our radar!\n"
+                    f"👻 WHO YA GONNA CALL? NOT {display_name}! This ghost has vanished from our radar!\n"
                     f"⚡ Ectoplasmic absence streak: {failure_streak} days and counting! ⚡\n"
                     f"We're picking up strong PKE readings of inactivity!"
                 )
             else:
-                message = f"👻 SPECTRAL ALERT! {user_info.first_name} has crossed over to the invisible realm today! No messages detected on our PKE meter!"
+                message = f"👻 SPECTRAL ALERT! {display_name} has crossed over to the invisible realm today! No messages detected on our PKE meter!"
                 
             bot.send_message(chat_id, message)
             failure_count += 1
