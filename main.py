@@ -80,22 +80,7 @@ def main():
         # Remove webhook, it fails sometimes the set if there is a previous webhook
         bot.remove_webhook()
 
-        # Configure webhook URL based on the host
-        use_ssl = os.path.exists(WEBHOOK_SSL_CERT) and os.path.exists(WEBHOOK_SSL_PRIV)
-        protocol = "https" if use_ssl else "http"
-        WEBHOOK_URL_BASE = f"{protocol}://{WEBHOOK_HOST}:{WEBHOOK_PORT}"
-        WEBHOOK_URL_PATH = f"/{API_TOKEN}/"
-        
-        # Set webhook
-        if use_ssl:
-            print("Using SSL certificates for webhook")
-            bot.set_webhook(
-                url=WEBHOOK_URL_BASE + WEBHOOK_URL_PATH,
-                certificate=open(WEBHOOK_SSL_CERT, 'r')
-            )
-        else:
-            print("Running webhook without SSL certificates")
-            bot.set_webhook(url=WEBHOOK_URL_BASE + WEBHOOK_URL_PATH)
+        bot.set_webhook(url=WEBHOOK_URL)
 
         # Start FastAPI server
         uvicorn_kwargs = {
@@ -103,13 +88,6 @@ def main():
             "host": WEBHOOK_LISTEN,
             "port": WEBHOOK_PORT
         }
-        
-        # Add SSL configuration only if certificates exist
-        if use_ssl:
-            uvicorn_kwargs.update({
-                "ssl_certfile": WEBHOOK_SSL_CERT,
-                "ssl_keyfile": WEBHOOK_SSL_PRIV
-            })
             
         # Start the server
         uvicorn.run(**uvicorn_kwargs)
