@@ -64,6 +64,10 @@ def process_webhook(update: dict):
     else:
         return
     
+@app.get("/")
+def health_check():
+    return {"status": "OK"}
+    
 def main():
     """Main function to run the bot in either webhook or polling mode"""
     # Register all handlers
