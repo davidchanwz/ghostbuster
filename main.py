@@ -13,7 +13,6 @@ import telebot
 from dotenv import load_dotenv
 from handlers import register_handlers
 from activity_handlers import register_activity_handlers
-from scheduler import schedule_midnight_check
 
 # Load environment variables from .env file if it exists
 load_dotenv()
